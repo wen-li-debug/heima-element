@@ -1,0 +1,25 @@
+@font-face {font-family: "iconfont";
+    src: url('//at.alicdn.com/t/font_2123464_iwr28gpq7um.eot?t=1602486448277'); /* IE9 */
+    src: url('//at.alicdn.com/t/font_2123464_iwr28gpq7um.eot?t=1602486448277#iefix') format('embedded-opentype'), /* IE6-IE8 */
+    url('data:application/x-font-woff2;charset=utf-8;base64,d09GMgABAAAAAAN0AAsAAAAAB4wAAAMoAAEAAAAAAAAAAAAAAAAAAAAAAAAAAAAAHEIGVgCDBgqCcIJGATYCJAMMCwgABCAFhG0HOhuQBhHVm53IfiRUvGeoprnFMWk/TZnimeDhq7N+oTHVA3UyC8LBChgdV3cIx31BlS1lV4qtOUcgJ0zUZEnWjjzaYvL/pfTSdHBwOf3/SnyeZbnNMXFMwAQDG2tSQq8FEpA3jF15EcchAENB5YnmLdt3x0VjjBOAGD9m1BDclBpdkytwEdglSzViMxauXCPvA5v874svVM0FiaUwpnYe2WI4jd/L90PU4thi/V0EznhGgK0CBZQHGsTAUnNvVBguT2EUsa5PtdEI5Fi+WAyfrUrtlf7xJAgbIzsegNLQK+G9zYCA90NeQAKgALABDcwCNkB5et/bZPVCRdS8kZGACaUPDy32CXueDJ/wvWgwKozeS6Kety4MsNgPlyScCipvXdDHy67xoeOAUUsCkYgxo6Lr/BEmFEoPIY2InAzMixxNnx3a7ofD/pBmPacNr8/iE+tOBcWQcDB8LDhILOnfc1S9LbMOZc7cb22eeSBzTsYOsTph0JCEtMeZmWuuJ8WpXGe1M8DGY640SdfnPL73uFjCkIGJc8Qap/C4TJEgXy8b5pQo/dnUbj7oVMKpVoNqbf5UuoQzbNnbeJFJvf+/36wrVbO2HZnVrviqock9tj1vMaxSmw0dcxKT85JwrnT/Jo3PJ5SbMsF2jnf40a7FWgYDELuzbNUYRn/vqkr5N7/h1Y2sh4OS6v9zPQ3Ak5NFzkNX7M7RXot75hYBf4LTskmrPEOjtMy22bpV0a1nSAJGtRHDsKd63l/qt84GgYsfg8ShAChciqOaVB4sPKqDjUsjMJTTarVHmqkohI4DyloBQJDsHEgSuQeKZA9QTXoGFgHfwCY5BQb13WHLvWNudxLMFEvI/+AK7sjS6S7IvaMZm0ySPJ/8RhmcD0IvyMZu2KGMMWP4mEiVgIRbuILTsGkYeuEKC/Wsah/7PpW9ySu4neycCJRRqARyf8ApsA65ndUu9/k7ZIwaGakpqzC/ITFw3YOQJ2iB3sRdq7JreWXwYUSUIoAI1gJXYESNGWagLx9UQQXlsT2CvZiP2lFbsTe/tH2ALFaFUbpe62xPvW9iucUFZfk4mQA=') format('woff2'),
+    url('//at.alicdn.com/t/font_2123464_iwr28gpq7um.woff?t=1602486448277') format('woff'),
+    url('//at.alicdn.com/t/font_2123464_iwr28gpq7um.ttf?t=1602486448277') format('truetype'), /* chrome, firefox, opera, Safari, Android, iOS 4.2+ */
+    url('//at.alicdn.com/t/font_2123464_iwr28gpq7um.svg?t=1602486448277#iconfont') format('svg'); /* iOS 4.1- */
+  }
+  
+  .iconfont {
+    font-family: "iconfont" !important;
+    font-size: 16px;
+    font-style: normal;
+    -webkit-font-smoothing: antialiased;
+    -moz-osx-font-smoothing: grayscale;
+  }
+  
+  .icon-icon_home:before {
+    content: "\e602";
+  }
+  
+  .icon-fabu:before {
+    content: "\e661";
+  }
+  
