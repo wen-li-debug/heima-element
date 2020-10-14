@@ -1,5 +1,5 @@
 <template>
-    <el-aside width="200px">
+    <el-aside width="auto">
       <el-menu
         default-active="2"
         class="aside-container"
@@ -7,9 +7,10 @@
         text-color="#fff"
         active-text-color="#ffd04b"
         router
+        :collapse="isCollapse"
         >
         <el-menu-item class="logo-img">
-           <img src="@/assets/image/logo_index.png" alt="">
+           <img src="@/assets/image/login/logo_index.png" alt="">
         </el-menu-item>
         <el-menu-item index="/home">
             <i class="iconfont icon-icon_home"></i>
@@ -47,10 +48,13 @@
 export default {
   name: 'AppAside',
   components: {},
-  props: {},
-  data () {
-    return {
+  props: {
+    isCollapse: {
+      type: Boolean
     }
+  },
+  data () {
+    return {}
   },
   watch: {},
   computed: {},

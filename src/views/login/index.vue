@@ -1,14 +1,14 @@
 <template>
   <div class="login">
     <div class="login-logo">
-      <img src="../../assets/image/logo_index.png" alt="">
+      <img src="../../assets/image/login/logo_index.png" alt="">
     </div>
     <el-form class="login-form" ref="form" :model="users" :rules="rules">
     <el-form-item prop="mobile">
       <el-input v-model="users.mobile" placeholder="请输入用户名"></el-input>
     </el-form-item>
      <el-form-item prop="code">
-      <el-input v-model="users.code" placeholder="请输入密码"></el-input>
+      <el-input v-model="users.code" placeholder="请输入密码">246810</el-input>
     </el-form-item>
     <el-form-item prop="agree">
       <el-checkbox v-model="users.agree" label="1">我已阅读并同意协议和隐私条件</el-checkbox>
@@ -36,10 +36,11 @@ export default {
     }
     return {
       users: {
-        mobile: '',
-        code: '',
+        mobile: '13911111111',
+        code: '246810',
         agree: false
       },
+      newUsers: {},
       loginLoading: false,
       // 规则
       rules: {
@@ -75,9 +76,12 @@ export default {
       try {
         const res = await login(this.users)
         this.loginLoading = false
-        const message = res.data.message
+        const message = res.message
         if (message === 'OK') {
           this.$message({ message: '登录成功', type: 'success' })
+          // 获取token
+          this.newUsers = res.data.data
+          localStorage.setItem('user', JSON.stringify(this.newUsers))
           this.$router.push({ name: 'home' })
         } else {
           this.$message.error('登录失败,账号或者密码错误!')
@@ -104,7 +108,7 @@ export default {
   flex-direction: column;
   justify-content: center;
   align-items: center;
-  background: url('../../assets/image/login_bg.jpg') no-repeat;
+  background: url('../../assets/image/login/login_bg.jpg') no-repeat;
   background-size: cover;  // 已最短的为基准
   .login-logo{
     background-color: #fff;

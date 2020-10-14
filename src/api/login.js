@@ -8,3 +8,11 @@ export function login (users) {
     data: users
   })
 }
+
+// 获取用户信息请求
+export function getUserProfile () {
+  return request({
+    method: 'GET',
+    url: '/mp/v1_0/user/profile'
+  })
+}

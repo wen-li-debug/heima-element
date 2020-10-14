@@ -1,10 +1,10 @@
 <template>
   <div class="layout-container">
       <el-container class="container">
-        <app-aside />
+        <app-aside :isCollapse="isCollapse" />
         <el-container>
             <el-header class="layout-header">
-                <app-header />
+                <app-header @isCollClick="isCollClick" :isCollapse="isCollapse" />
             </el-header>
             <el-main class="layout-main">
                 <router-view></router-view>
@@ -27,11 +27,16 @@ export default {
   props: {},
   data () {
     return {
+      isCollapse: false
     }
   },
   watch: {},
   computed: {},
-  methods: {},
+  methods: {
+    isCollClick () {
+      this.isCollapse = !this.isCollapse
+    }
+  },
   created () {},
   mounted () {}
 }
