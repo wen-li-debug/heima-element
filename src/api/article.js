@@ -16,3 +16,29 @@ export function getArticleChannels () {
     url: '/mp/v1_0/channels'
   })
 }
+
+/**
+ * 删除文章
+ */
+
+export function getDelArticle (articleId) {
+  return request({
+    method: 'DELETE',
+    url: `/mp/v1_0/articles/${articleId}`
+  })
+}
+
+/**
+ * 发表文章
+ */
+
+export function addArticle (data, draft = false) {
+  return request({
+    method: 'POST',
+    url: '/mp/v1_0/articles',
+    params: {
+      draft
+    },
+    data
+  })
+}

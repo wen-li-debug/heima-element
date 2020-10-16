@@ -75,12 +75,13 @@ export default {
     async getLogin () {
       try {
         const res = await login(this.users)
+        console.log(res)
         this.loginLoading = false
         const message = res.message
         if (message === 'OK') {
           this.$message({ message: '登录成功', type: 'success' })
           // 获取token
-          this.newUsers = res.data.data
+          this.newUsers = res.data
           localStorage.setItem('user', JSON.stringify(this.newUsers))
           this.$router.push({ name: 'home' })
         } else {

@@ -6,6 +6,7 @@
         </div>
         <el-table
             :data="tableData"
+            v-loading="loading"
             stripe
             border
             style="width: 100%"
@@ -15,11 +16,19 @@
             label="封面"
             >
               <template slot-scope="scope">
-                <img class="scope-img"
+                <!-- <img class="scope-img"
                 :src="scope.row.cover.images[0]"
                 alt=""
                 v-if="scope.row.cover.images[0]">
-                <img class="scope-img" v-else src="@/assets/image/article/no-cover.gif" alt="">
+                <img class="scope-img" v-else src="@/assets/image/article/no-cover.gif" alt=""> -->
+                 <el-image
+                  style="width: 100px; height: 100px"
+                  :src="scope.row.cover.images[0]"
+                  fit="cover">
+                   <div slot="placeholder" class="image-slot">
+                    加载中<span class="dot">...</span>
+                  </div>
+                  </el-image>
               </template>
             </el-table-column>
             <el-table-column
@@ -44,7 +53,7 @@
             </el-table-column>
             <el-table-column
             label="操作">
-             <template>
+             <template slot-scope="scope">
                 <el-button
                 size="mini"
                 type="primary"
@@ -56,6 +65,7 @@
                 type="danger"
                 circle
                 icon="el-icon-delete"
+                @click="getDelArticle(scope.row.id)"
                 ></el-button>
             </template>
             </el-table-column>
@@ -64,7 +74,9 @@
             layout="prev, pager, next"
             :total="total"
             background
-            @current-change="currentChange" />
+            @current-change="currentChange"
+            :disabled="loading"
+            :current-page.sync="page" />
     </el-card>
    </div>
 </template>
@@ -78,11 +90,15 @@ export default {
     },
     total: {
       type: Number
+    },
+    loading: {
+      type: Boolean
     }
   },
   data () {
     return {
-      noImg: '@/assets/image/article/no-cover.gif'
+      noImg: '@/assets/image/article/no-cover.gif',
+      page: 1
     }
   },
   watch: {},
@@ -92,6 +108,10 @@ export default {
   methods: {
     currentChange (page) {
       this.$emit('currentChange', page)
+    },
+    getDelArticle (id) {
+      console.log(id.toString())
+      this.$emit('getDelArticle', { iid: id.toString(), page: this.page })
     }
   }
 }
@@ -101,6 +121,10 @@ export default {
     margin-bottom: 20px;
     .scope-img{
       width: 100px;
+    }
+    .image-slot{
+      text-align: center;
+      line-height: 100px;
     }
 }
 </style>

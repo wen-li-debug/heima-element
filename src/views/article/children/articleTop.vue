@@ -26,15 +26,16 @@
             </el-form-item>
             <el-form-item label="日期">
                 <el-date-picker
-                    v-model="form.date1"
+                    v-model="rangData"
                     type="daterange"
                     start-placeholder="开始日期"
                     end-placeholder="结束日期"
+                    value-format="yyyy-MM-dd"
                     :default-time="['00:00:00', '23:59:59']">
                 </el-date-picker>
             </el-form-item>
             <el-form-item>
-                <el-button type="primary" @click="onSubmit">筛选</el-button>
+                <el-button type="primary" @click="onSubmit" :disabled="loading">筛选</el-button>
             </el-form-item>
         </el-form>
     </el-card>
@@ -54,13 +55,22 @@ export default {
     },
     channels: {
       type: Array
+    },
+    loading: {
+      type: Boolean
     }
   },
   data () {
     return {
+      rangData: null
     }
   },
-  watch: {},
+  watch: {
+    rangData (newValue) {
+      this.pages.begin_pubdate = newValue ? newValue[0] : null
+      this.pages.end_pubdate = newValue ? newValue[1] : null
+    }
+  },
   computed: {},
   created () {},
   mounted () {},
