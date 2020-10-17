@@ -42,3 +42,29 @@ export function addArticle (data, draft = false) {
     data
   })
 }
+
+/**
+ * 获取修改文章信息
+ */
+
+export function getUpdaArticle (articleId) {
+  return request({
+    method: 'GET',
+    url: `/mp/v1_0/articles/${articleId}`
+  })
+}
+
+/**
+ * 修改文章
+ */
+
+export function updaArticle (articleId, data, draft = false) {
+  return request({
+    method: 'PUT',
+    url: `/mp/v1_0/articles/${articleId}`,
+    params: {
+      draft
+    },
+    data
+  })
+}

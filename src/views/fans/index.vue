@@ -1,5 +1,7 @@
 <template>
-  <div class=""></div>
+  <div class="fontColor">
+    fans
+  </div>
 </template>
 
 <script>
@@ -19,4 +21,7 @@ export default {
 }
 </script>
 <style lang="less" scoped>
+.fontColor{
+  color: red;
+}
 </style>

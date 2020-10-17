@@ -8,6 +8,8 @@ const Home = () => import('@/views/home/index.vue')
 const Layout = () => import('@/views/layout/index.vue')
 const Article = () => import('@/views/article')
 const Publish = () => import('@/views/publish')
+const Fans = () => import('@/views/fans')
+const Image = () => import('@/views/image')
 
 const routes = [
   {
@@ -38,6 +40,16 @@ const routes = [
         path: '/publish',
         name: 'publish',
         component: Publish
+      },
+      {
+        path: '/fans',
+        name: 'fans',
+        component: Fans
+      },
+      {
+        path: '/image',
+        name: 'image',
+        component: Image
       }
     ]
   }

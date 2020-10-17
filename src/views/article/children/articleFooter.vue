@@ -59,6 +59,7 @@
                 type="primary"
                 circle
                 icon="el-icon-edit"
+                @click="updaArticle(scope.row.id)"
                 ></el-button>
                 <el-button
                 size="mini"
@@ -112,6 +113,9 @@ export default {
     getDelArticle (id) {
       console.log(id.toString())
       this.$emit('getDelArticle', { iid: id.toString(), page: this.page })
+    },
+    updaArticle (id) {
+      this.$router.push('/publish?id=' + id.toString())
     }
   }
 }
