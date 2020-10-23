@@ -1,12 +1,7 @@
 <template>
   <div class="articleTop">
     <el-card>
-        <div slot="header" class="clearfix">
-            <el-breadcrumb separator-class="el-icon-arrow-right">
-                <el-breadcrumb-item to="/home">首页</el-breadcrumb-item>
-                <el-breadcrumb-item>内容管理</el-breadcrumb-item>
-            </el-breadcrumb>
-        </div>
+        <breadcrumb :breadTitle="breadTitle"/>
         <el-form ref="form" :model="form" label-width="80px" size="small">
             <el-form-item label="状态">
                 <el-radio-group v-model="pages.status">
@@ -43,9 +38,12 @@
 </template>
 
 <script>
+import breadcrumb from '@/components/breadcrumb/breadcrumb'
 export default {
   name: 'ArticleTop',
-  components: {},
+  components: {
+    breadcrumb
+  },
   props: {
     form: {
       type: Object
@@ -62,7 +60,8 @@ export default {
   },
   data () {
     return {
-      rangData: null
+      rangData: null,
+      breadTitle: '内容管理'
     }
   },
   watch: {

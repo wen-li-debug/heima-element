@@ -1,18 +1,14 @@
 <template>
   <div class="publish-container">
     <el-card class="box-card">
-      <div slot="header" class="clearfix">
-        <el-breadcrumb separator-class="el-icon-arrow-right">
-          <el-breadcrumb-item to="/home">首页</el-breadcrumb-item>
-          <el-breadcrumb-item>{{articelId ? '修改管理' : '发布管理'}}</el-breadcrumb-item>
-        </el-breadcrumb>
-      </div>
+     <breadcrumb :breadTitle="articelId ? '修改管理' : '发布管理'" />
      <el-form ref="form" :model="article" label-width="80px" :rules="rules">
       <el-form-item label="标题" prop="title">
         <el-input v-model="article.title"></el-input>
       </el-form-item>
       <el-form-item label="内容" prop="content">
-        <el-tiptap v-model="article.content" :extensions="extensions"/>
+        <!-- <quillEditor class="editor"/> -->
+        <el-tiptap v-model="article.content" :extensions="extensions" placeholder="请输入文章内容" height="350"/>
       </el-form-item>
       <el-form-item label="封面" prop="type">
         <el-radio-group v-model="article.cover.type">
@@ -23,14 +19,6 @@
         </el-radio-group>
       </el-form-item>
       <el-form-item>
-        <el-upload
-          class="avatar-uploader"
-          action="https://jsonplaceholder.typicode.com/posts/"
-          :show-file-list="false"
-         >
-          <img v-if="article.images" :src="article.images" class="avatar">
-          <i v-else class="el-icon-plus avatar-uploader-icon"></i>
-        </el-upload>
       </el-form-item>
       <el-form-item label="频道" prop="channel_id">
         <el-select v-model="article.channel_id" placeholder="请选择频道">
@@ -47,9 +35,18 @@
 </template>
 
 <script>
+import breadcrumb from '@/components/breadcrumb/breadcrumb'
 import { getArticleChannels, addArticle, getUpdaArticle, updaArticle } from '@/api/article'
+import { upLoadImg } from '@/api/upLoadImg'
+// import 'quill/dist/quill.core.css'
+// import 'quill/dist/quill.snow.css'
+// import 'quill/dist/quill.bubble.css'
+import 'element-tiptap/lib/index.css'
+
+// import { quillEditor } from 'vue-quill-editor'
+
 import {
-  // 需要的 extensions
+  // necessary extensions
   ElementTiptap,
   Doc,
   Text,
@@ -61,16 +58,31 @@ import {
   Strike,
   ListItem,
   BulletList,
-  OrderedList
+  OrderedList,
+  Fullscreen,
+  TodoItem,
+  TodoList,
+  CodeBlock,
+  Preview,
+  Image
 } from 'element-tiptap'
 
 export default {
   name: 'PublishIndex',
   components: {
-    'el-tiptap': ElementTiptap
+    'el-tiptap': ElementTiptap,
+    breadcrumb
+    // quillEditor
   },
   props: {},
   data () {
+    const contextValida = (rule, value, callback) => {
+      console.log(value)
+      if (value === '<p></p>') {
+        callback(new Error('内容不能为空'))
+      }
+      callback()
+    }
     return {
       article: {
         title: '',
@@ -89,7 +101,8 @@ export default {
           { min: 5, max: 30, message: '长度需要5-30之内', trgger: 'blur' }
         ],
         content: [
-          { required: true, message: '请输入内容', trigger: 'blur' }
+          { required: true, message: '请输入内容', trigger: 'blur' },
+          { validator: contextValida }
         ],
         // type: [
         //   { required: true, message: '请输入封面', trigger: 'blur' }
@@ -98,19 +111,35 @@ export default {
           { required: true, message: '请选择频道', trigger: 'blur' }
         ]
       },
-      // 富文本内容
       extensions: [
         new Doc(),
         new Text(),
         new Paragraph(),
         new Heading({ level: 5 }),
-        new Bold({ bubble: true }), // 在气泡菜单中渲染菜单按钮
-        new Underline({ bubble: true, menubar: false }), // 在气泡菜单而不在菜单栏中渲染菜单按钮
+        new Bold({ bubble: true }), // render command-button in bubble menu.
+        new Underline({ bubble: true, menubar: false }), // render command-button in bubble menu but not in menubar.
         new Italic(),
         new Strike(),
         new ListItem(),
         new BulletList(),
-        new OrderedList()
+        new OrderedList(),
+        new Fullscreen(),
+        new TodoItem(),
+        new TodoList(),
+        new CodeBlock(),
+        new Preview(),
+        new Image({
+          uploadRequest (file) {
+            console.log(file)
+            // 创建一个文件上传对象
+            const fd = new FormData()
+            fd.append('image', file)
+            // 发送请求转化图片
+            return upLoadImg(fd).then(res => {
+              return res.data.url
+            })
+          }
+        })
       ]
     }
   },
@@ -145,22 +174,6 @@ export default {
       })
     },
 
-    handleAvatarSuccess (res, file) {
-      this.imageUrl = URL.createObjectURL(file.raw)
-    },
-    beforeAvatarUpload (file) {
-      const isJPG = file.type === 'image/jpeg'
-      const isLt2M = file.size / 1024 / 1024 < 2
-
-      if (!isJPG) {
-        this.$message.error('上传头像图片只能是 JPG 格式!')
-      }
-      if (!isLt2M) {
-        this.$message.error('上传头像图片大小不能超过 2MB!')
-      }
-      return isJPG && isLt2M
-    },
-
     // 根据ID获取需要修改的数据
     getUpdaArticle (id) {
       getUpdaArticle(id).then(res => {
@@ -170,12 +183,17 @@ export default {
 
     // 修改文章数据
     updaArticle () {
-      updaArticle(this.articelId, this.article, false).then(res => {
-        this.$message({
-          message: '修改成功',
-          type: 'success'
+      this.$refs.form.validate(valid => {
+        if (!valid) {
+          return
+        }
+        updaArticle(this.articelId, this.article, false).then(res => {
+          this.$message({
+            message: '修改成功',
+            type: 'success'
+          })
+          this.$router.push('/article')
         })
-        this.$router.push('/article')
       })
     },
 

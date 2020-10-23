@@ -10,6 +10,7 @@ const Article = () => import('@/views/article')
 const Publish = () => import('@/views/publish')
 const Fans = () => import('@/views/fans')
 const Image = () => import('@/views/image')
+const Comment = () => import('@/views/comment')
 
 const routes = [
   {
@@ -50,6 +51,11 @@ const routes = [
         path: '/image',
         name: 'image',
         component: Image
+      },
+      {
+        path: '/comment',
+        name: 'comment',
+        component: Comment
       }
     ]
   }

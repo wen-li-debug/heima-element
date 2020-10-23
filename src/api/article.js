@@ -68,3 +68,19 @@ export function updaArticle (articleId, data, draft = false) {
     data
   })
 }
+
+/**
+ * 修改评论管理状态
+ */
+export function updaCommentStatus (articleId, allowComment) {
+  return request({
+    method: 'PUT',
+    url: '/mp/v1_0/comments/status',
+    query: {
+      article_id: articleId
+    },
+    data: {
+      allow_comment: allowComment
+    }
+  })
+}
