@@ -76,7 +76,7 @@ export function updaCommentStatus (articleId, allowComment) {
   return request({
     method: 'PUT',
     url: '/mp/v1_0/comments/status',
-    query: {
+    params: {
       article_id: articleId
     },
     data: {

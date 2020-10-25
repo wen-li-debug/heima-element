@@ -37,6 +37,7 @@
               v-model="scope.row.comment_status"
               active-color="#13ce66"
               inactive-color="#ff4949"
+              :disabled="scope.row.loading"
               @change="onChangeStatus(scope.row)">
             </el-switch>
           </template>
@@ -46,11 +47,13 @@
       <el-pagination
         @size-change="handleSizeChange"
         @current-change="handleCurrentChange"
-        :current-page="currentPage"
-        :page-sizes="[100, 200, 300, 400]"
-        :page-size="100"
+        :current-page.sync="pages.page"
+        :page-sizes="[10, 15, 20]"
+        :page-size.sync="pages.per_page"
         layout="total, sizes, prev, pager, next, jumper"
-        :total="400">
+        :total="totalCount"
+        background
+        :disabled="loading">
       </el-pagination>
     </el-card>
   </div>
@@ -69,25 +72,15 @@ export default {
   data () {
     return {
       title: '评论管理',
-      tableData: [{
-        date: '2016-05-02',
-        name: '王小虎',
-        address: '上海市普陀区金沙江路 1518 弄'
-      }, {
-        date: '2016-05-04',
-        name: '王小虎',
-        address: '上海市普陀区金沙江路 1517 弄'
-      }, {
-        date: '2016-05-01',
-        name: '王小虎',
-        address: '上海市普陀区金沙江路 1519 弄'
-      }, {
-        date: '2016-05-03',
-        name: '王小虎',
-        address: '上海市普陀区金沙江路 1516 弄'
-      }],
       currentPage: 1,
-      commentsData: []
+      commentsData: [],
+      totalCount: 0,
+      loading: false,
+      pages: {
+        page: 1,
+        per_page: 10,
+        response_type: 'comment'
+      }
     }
   },
   watch: {},
@@ -97,24 +90,43 @@ export default {
   },
   mounted () {},
   methods: {
+    // 每页显示的条数
     handleSizeChange (value) {
-      console.log(value)
+      this.pages.per_page = value
+      this.getArticle()
     },
+    // 跳转的页码
     handleCurrentChange (value) {
-      console.log(value)
+      this.pages.page = value
+      this.getArticle()
     },
+    // 获取评论数据
     getArticle () {
-      getArticle({
-        response_type: 'comment'
-      }).then(res => {
-        this.commentsData = res.data.results
+      this.loading = true
+      getArticle(this.pages).then(res => {
+        const result = res.data.results
+        console.log(res)
+        // 添加loading用于禁用按钮
+        result.forEach(ele => {
+          ele.loading = false
+        })
+        this.commentsData = result
+        this.totalCount = res.data.total_count
+        this.loading = false
       })
     },
     // 改变评论状态
     onChangeStatus (item) {
-      const newStatus = !item.comment_status
-      updaCommentStatus(item.id, newStatus).then(res => {
-        console.log(res)
+      item.loading = true
+      console.log(item.loading)
+      const articleId = item.id.toString()
+      console.log(articleId)
+      updaCommentStatus(articleId, item.comment_status).then(res => {
+        item.loading = false
+        this.$message({
+          type: 'success',
+          message: item.comment_status ? '开启文章评论成功' : '关闭文章评论成功'
+        })
       })
     }
   }

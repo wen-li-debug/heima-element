@@ -11,6 +11,7 @@ const Publish = () => import('@/views/publish')
 const Fans = () => import('@/views/fans')
 const Image = () => import('@/views/image')
 const Comment = () => import('@/views/comment')
+const Settings = () => import('@/views/settings')
 
 const routes = [
   {
@@ -56,6 +57,11 @@ const routes = [
         path: '/comment',
         name: 'comment',
         component: Comment
+      },
+      {
+        path: '/settings',
+        name: 'settings',
+        component: Settings
       }
     ]
   }
