@@ -43,7 +43,7 @@
           :src="settingsForm.photo">
           </el-avatar>
           <!-- 使用ref来触发input file事件 -->
-          <p style="text-align:center" @click="$refs.file.click()">点击修改头像</p>
+          <p style="margin-left: 30px" @click="$refs.file.click()">点击修改头像</p>
           <input type="file" hidden ref="file" @change="onChangeFile">
         </el-col>
       </el-row>
@@ -53,20 +53,32 @@
     <el-dialog
       title="修改图片提示"
       :visible.sync="ImgVisible"
-      width="50%"
+      width="30%"
+      @opened="onOpendDialog"
+      @close="onCloseDialog"
       >
-      <span>这是一段信息</span>
+      <div class="previewImg-warp">
+        <img
+          class="preview"
+          :src="previewImg"
+          alt=""
+          ref="previewImgRef"
+        >
+      </div>
       <span slot="footer" class="dialog-footer">
         <el-button @click="ImgVisible = false">取 消</el-button>
-        <el-button type="primary" @click="ImgVisible = false">确 定</el-button>
+        <el-button type="primary" @click="updataImg" :loading="updataImgLoading">确 定</el-button>
       </span>
     </el-dialog>
   </div>
 </template>
 
 <script>
+import 'cropperjs/dist/cropper.css'
+import Cropper from 'cropperjs'
+
 import breadcrumb from '@/components/breadcrumb/breadcrumb'
-import { getUserProfile } from '@/api/login'
+import { getUserProfile, updataImg } from '@/api/login'
 
 export default {
   name: 'settingIndex',
@@ -78,6 +90,7 @@ export default {
     return {
       title: '个人设置',
       ImgVisible: false,
+      previewImg: '',
       settingsForm: {
         id: '',
         name: '',
@@ -100,7 +113,9 @@ export default {
         email: [
           { required: true, message: '请选择活动区域', trigger: 'change' }
         ]
-      }
+      },
+      cropper: null,
+      updataImgLoading: false
     }
   },
   watch: {},
@@ -113,11 +128,71 @@ export default {
       })
     },
     // 修改头像
-    onChangeFile (value) {
-      console.log(value)
+    onChangeFile () {
+      // 获取input文件元素
+      const file = this.$refs.file
+      // 获取选中图片的路径
+      const blobDate = window.URL.createObjectURL(file.files[0])
+      // 将选中的图片路径赋值
+      this.previewImg = blobDate
+
       this.ImgVisible = true
       // 解决选择同一文件不会触发事件的问题,将input中value值清空
       this.$refs.file.value = ''
+    },
+    // 对话框打开动画结束后执行的函数
+    onOpendDialog () {
+      /**
+       * 图片裁切器必须基于 img 进行初始化
+       * 注意： img必须是可见状态才能正常完成初始化
+       * 所以在我们对话框中必须在opened中才能img初始化
+       */
+      // 获取文件元素
+      const image = this.$refs.previewImgRef
+      // 替换图片路径
+      // if (this.cropper) {
+      //   this.cropper.replace(this.previewImg)
+      //   return
+      // }
+      // 调用裁切器
+      this.cropper = new Cropper(image, {
+        // 比例
+        aspectRatio: 1,
+        // 不能移动抹布
+        dragMode: 'none',
+        // 不能拉出区域
+        viewMode: 1,
+        cropBoxResizable: false
+      })
+    },
+    // 对话框关闭动画结束后执行的函数
+    onCloseDialog () {
+      this.cropper.destroy()
+    },
+    // 修改用户头像
+    updataImg () {
+      this.updataImgLoading = true
+      // 获取截取好的文件对象
+      this.cropper.getCroppedCanvas().toBlob(file => {
+        const fd = new FormData()
+        fd.append('photo', file)
+
+        // 提交接口修改头像
+        updataImg(fd).then(res => {
+          this.updataImgLoading = false
+
+          // 关闭对话框
+          this.ImgVisible = false
+
+          // 跟新头像
+          this.settingsForm.photo = window.URL.createObjectURL(file)
+
+          this.$message({
+            type: 'success',
+            message: '更换成功'
+          })
+        })
+      })
     }
   },
   created () {
@@ -127,4 +202,12 @@ export default {
 }
 </script>
 <style lang="less" scoped>
+.previewImg-warp{
+  .preview{
+    display: block;
+  /* This rule is very important, please don't ignore this */
+    max-width: 100%;
+    height: 200px;
+  }
+}
 </style>
