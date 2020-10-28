@@ -1,5 +1,6 @@
 <template>
-  <div class="articleImg-container" @click="articleClick">
+  <div class="articleImg-container">
+  <div class="article-container-img" @click="articleClick">
     <el-image
       :src="url"
       fit="cover"
@@ -8,6 +9,7 @@
         <i class="el-icon-picture-outline"></i>
       </div>
     </el-image>
+  </div>
      <!-- 上传图片的对话框 -->
     <el-dialog
       title="提示"
@@ -15,7 +17,14 @@
       append-to-body
       >
        <el-tabs v-model="activeName" type="border-card">
-        <el-tab-pane label="全部" name="whole">全部</el-tab-pane>
+        <el-tab-pane label="全部" name="whole">
+          <imgList
+          :isShowActive="false"
+          :isShowAdd="false"
+          isShowSelected
+          ref="selectImg"
+          />
+        </el-tab-pane>
         <el-tab-pane label="上传文件" name="Collection">
           <template>
             <input type="file" ref="profileView" @change="changeFile">
@@ -35,17 +44,20 @@
 
 <script>
 import { upLoadImg } from '@/api/upLoadImg'
+import imgList from '@/components/imgList/imgList'
 
 export default {
   name: 'articleImg',
-  components: {},
-  props: ['coverImg'],
+  components: {
+    imgList
+  },
+  props: ['value'],
   data () {
     return {
-      url: this.coverImg,
+      url: this.value,
       imgDialogVisible: false,
       profileLoading: false,
-      activeName: '',
+      activeName: 'whole',
       changeImg: ''
     }
   },
@@ -69,15 +81,15 @@ export default {
     },
     // 确定上传文件
     onSubmitImg () {
-      this.profileLoading = true
-      const files = this.$refs.profileView.files[0]
       // 判断是否是点击了上传图片
       if (this.activeName === 'Collection') {
+        const files = this.$refs.profileView.files[0]
         // 判断是否已经上传了图片
         if (!files) {
           this.$message('请选择图片')
           return
         }
+        this.profileLoading = true
         // 将文件转为formData 格式
         const fd = new FormData()
         fd.append('image', files)
@@ -92,20 +104,33 @@ export default {
           this.imgDialogVisible = false
 
           // 将生成的url传给父组件
-          this.$emit('updataImg', res.data.url)
+          // this.$emit('updataImg', res.data.url)
+          this.$emit('input', res.data.url)
         })
+      } else {
+        // 获取selectImg组件
+        const selectImg = this.$refs.selectImg
+        const selected = selectImg.selected
+        console.log(selected, selectImg.images[selected].url)
+        // 判断是否选择了图片
+        if (selectImg.selected == null) {
+          this.$message('请先选择图片')
+          return
+        }
+        this.imgDialogVisible = false
+        this.$emit('input', selectImg.images[selected].url)
       }
     }
   }
 }
 </script>
 <style lang="less" scoped>
-.articleImg-container{
+.article-container-img{
   width: 180px;
   height: 120px;
   border: 1px solid #ccc;
-  text-align: center;
   line-height: 120px;
+  text-align: center;
   .article-img{
     width: 50px;
     height: 50px;

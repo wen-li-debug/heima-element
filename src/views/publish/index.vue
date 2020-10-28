@@ -10,20 +10,25 @@
         <!-- <quillEditor class="editor"/> -->
         <el-tiptap v-model="article.content" :extensions="extensions" placeholder="请输入文章内容" height="350"/>
       </el-form-item>
-      <el-form-item label="封面" prop="type">
-        <el-radio-group v-model="article.cover.type">
-          <el-radio :label="1">单图</el-radio>
-          <el-radio :label="3">三图</el-radio>
-          <el-radio :label="0">无图</el-radio>
-          <el-radio :label="-1">自动</el-radio>
-        </el-radio-group>
+      <el-form-item label="封面" prop="type" class="article-container">
+        <div>
+          <el-radio-group v-model="article.cover.type">
+            <el-radio :label="1">单图</el-radio>
+            <el-radio :label="3">三图</el-radio>
+            <el-radio :label="0">无图</el-radio>
+            <el-radio :label="-1">自动</el-radio>
+          </el-radio-group>
+        </div>
+        <!-- 在组件上使用v-model 就如同 绑定了prop:['value']和input事件 -->
         <template v-if="article.cover.type > 0">
           <article-img
+          class="article-item"
           v-for="(item,index) in article.cover.type"
           :key="item"
-          @updataImg="onUpdataImg(index,$event)"
-          :coverImg="article.cover.images[index]"
+          v-model="article.cover.images[index]"
           />
+          <!-- @updataImg="onUpdataImg(index,$event)"
+          :coverImg="article.cover.images[index]" -->
         </template>
       </el-form-item>
       <el-form-item>
@@ -232,7 +237,7 @@ export default {
       })
     },
     // 接受cover.image 的url
-    onUpdataImg (index, url) {
+    inpnt (index, url) {
       console.log(index, url)
       // 获取index和图片的url,给cover.image赋值
       this.article.cover.images[index] = url
@@ -263,5 +268,12 @@ export default {
     width: 178px;
     height: 178px;
     display: block;
+  }
+  .article-container{
+    .article-item{
+      float: left;
+      margin-left: 20px;
+      margin-top: 10px;
+    }
   }
 </style>
