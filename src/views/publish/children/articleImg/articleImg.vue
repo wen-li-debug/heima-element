@@ -2,8 +2,9 @@
   <div class="articleImg-container">
   <div class="article-container-img" @click="articleClick">
     <el-image
-      :src="url"
+      :src="value"
       fit="cover"
+      ref="imgListref"
     >
       <div slot="error" class="image-slot">
         <i class="el-icon-picture-outline"></i>
@@ -51,10 +52,14 @@ export default {
   components: {
     imgList
   },
-  props: ['value'],
+  props: {
+    value: {
+      type: String,
+      default: ''
+    }
+  },
   data () {
     return {
-      url: this.value,
       imgDialogVisible: false,
       profileLoading: false,
       activeName: 'whole',
@@ -99,19 +104,20 @@ export default {
             type: 'success',
             message: '上传成功'
           })
-          this.url = res.data.url
+          // this.$refs.imgListref.src = res.data.url
+          // this.url = res.data.url
           this.profileLoading = false
           this.imgDialogVisible = false
 
           // 将生成的url传给父组件
           // this.$emit('updataImg', res.data.url)
+          console.log(res.data.url)
           this.$emit('input', res.data.url)
         })
       } else {
         // 获取selectImg组件
         const selectImg = this.$refs.selectImg
         const selected = selectImg.selected
-        console.log(selected, selectImg.images[selected].url)
         // 判断是否选择了图片
         if (selectImg.selected == null) {
           this.$message('请先选择图片')

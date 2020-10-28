@@ -1,7 +1,7 @@
 <template>
     <el-aside width="auto">
       <el-menu
-        default-active="2"
+        :default-active="$route.path"
         class="aside-container"
         background-color="#001D35"
         text-color="#fff"

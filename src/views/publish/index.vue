@@ -235,13 +235,13 @@ export default {
           this.article = article
         })
       })
-    },
-    // 接受cover.image 的url
-    inpnt (index, url) {
-      console.log(index, url)
-      // 获取index和图片的url,给cover.image赋值
-      this.article.cover.images[index] = url
     }
+    // 接受cover.image 的url
+    // inpnt (index, url) {
+    //   console.log(index, url)
+    //   // 获取index和图片的url,给cover.image赋值
+    //   this.article.cover.images[index] = url
+    // }
   }
 }
 </script>
