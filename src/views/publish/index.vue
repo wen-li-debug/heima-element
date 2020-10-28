@@ -17,6 +17,9 @@
           <el-radio :label="0">无图</el-radio>
           <el-radio :label="-1">自动</el-radio>
         </el-radio-group>
+        <template v-if="article.cover.type > 0">
+          <article-img v-for="item in article.cover.type" :key="item"/>
+        </template>
       </el-form-item>
       <el-form-item>
       </el-form-item>
@@ -36,6 +39,7 @@
 
 <script>
 import breadcrumb from '@/components/breadcrumb/breadcrumb'
+import articleImg from './children/articleImg/articleImg'
 import { getArticleChannels, addArticle, getUpdaArticle, updaArticle } from '@/api/article'
 import { upLoadImg } from '@/api/upLoadImg'
 // import 'quill/dist/quill.core.css'
@@ -71,7 +75,8 @@ export default {
   name: 'PublishIndex',
   components: {
     'el-tiptap': ElementTiptap,
-    breadcrumb
+    breadcrumb,
+    articleImg
     // quillEditor
   },
   props: {},

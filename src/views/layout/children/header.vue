@@ -23,6 +23,7 @@
 
 <script>
 import { getUserProfile } from '@/api/login'
+import bus from '@/utils/globalBus'
 
 export default {
   name: 'AppHeader',
@@ -70,6 +71,12 @@ export default {
   },
   created () {
     this.getUserProfile()
+    // 注册总线事件
+    bus.$on('profileUser', res => {
+      console.log(res)
+      this.users.name = res.name
+      this.users.photo = res.photo
+    })
   },
   mounted () {}
 }

@@ -1,13 +1,17 @@
 <template>
-  <div class="fontColor">
-    fans
+  <div class="fontColor-container">
+    <echarts class="fans-echarts"/>
   </div>
 </template>
 
 <script>
+import echarts from '@/components/echarts'
+
 export default {
-  name: '',
-  components: {},
+  name: 'fansIndex',
+  components: {
+    echarts
+  },
   props: {},
   data () {
     return {
@@ -21,7 +25,8 @@ export default {
 }
 </script>
 <style lang="less" scoped>
-.fontColor{
-  color: red;
+.fans-echarts{
+  width: 600px;
+  height: 400px;
 }
 </style>

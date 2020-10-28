@@ -30,7 +30,11 @@
               <el-input v-model="settingsForm.email"></el-input>
             </el-form-item>
             <el-form-item>
-              <el-button type="primary">提交修改</el-button>
+              <el-button
+              type="primary"
+              @click="onSubmitUser"
+              :loading="updataProfileLoading"
+              >提交修改</el-button>
             </el-form-item>
           </el-form>
         </el-col>
@@ -76,9 +80,9 @@
 <script>
 import 'cropperjs/dist/cropper.css'
 import Cropper from 'cropperjs'
-
 import breadcrumb from '@/components/breadcrumb/breadcrumb'
-import { getUserProfile, updataImg } from '@/api/login'
+import { getUserProfile, updataImg, updataUser } from '@/api/login'
+import bus from '@/utils/globalBus'
 
 export default {
   name: 'settingIndex',
@@ -87,6 +91,14 @@ export default {
   },
   props: {},
   data () {
+    const vialidateEmail = (rule, value, callback) => {
+      const email = /[a-zA-Z0-9_-]+@[a-zA-Z0-9_-]+(\.[a-zA-Z0-9_-]+)+$/
+      if (email.test(value)) {
+        callback()
+      } else {
+        callback(new Error('请输入正确的邮箱'))
+      }
+    }
     return {
       title: '个人设置',
       ImgVisible: false,
@@ -102,20 +114,19 @@ export default {
       settingRules: {
         name: [
           { required: true, message: '请输入活动名称', trigger: 'blur' },
-          { min: 3, max: 5, message: '长度在 3 到 5 个字符', trigger: 'blur' }
-        ],
-        mobile: [
-          { required: true, message: '请选择活动区域', trigger: 'change' }
+          { min: 1, max: 7, message: '请输入1~7字符', trigger: 'blur' }
         ],
         intro: [
           { required: true, message: '请选择活动区域', trigger: 'change' }
         ],
         email: [
-          { required: true, message: '请选择活动区域', trigger: 'change' }
+          { required: true, message: '请选择活动区域', trigger: 'change' },
+          { validator: vialidateEmail, trigger: 'blur' }
         ]
       },
       cropper: null,
-      updataImgLoading: false
+      updataImgLoading: false,
+      updataProfileLoading: false
     }
   },
   watch: {},
@@ -135,7 +146,6 @@ export default {
       const blobDate = window.URL.createObjectURL(file.files[0])
       // 将选中的图片路径赋值
       this.previewImg = blobDate
-
       this.ImgVisible = true
       // 解决选择同一文件不会触发事件的问题,将input中value值清空
       this.$refs.file.value = ''
@@ -176,22 +186,38 @@ export default {
       this.cropper.getCroppedCanvas().toBlob(file => {
         const fd = new FormData()
         fd.append('photo', file)
-
         // 提交接口修改头像
         updataImg(fd).then(res => {
           this.updataImgLoading = false
-
           // 关闭对话框
           this.ImgVisible = false
-
           // 跟新头像
           this.settingsForm.photo = window.URL.createObjectURL(file)
-
           this.$message({
             type: 'success',
             message: '更换成功'
           })
+          bus.$emit('profileUser', this.settingsForm)
         })
+      })
+    },
+    // 提交用户信息修改
+    onSubmitUser () {
+      this.updataProfileLoading = true
+      // 判断用户格式
+      this.$refs.settingsRef.validate((valid) => {
+        if (!valid) {
+          return
+        }
+        updataUser(this.settingsForm).then(res => {
+          this.updataProfileLoading = false
+          // console.log(res)
+          this.$message({
+            type: 'success',
+            message: '修改成功'
+          })
+        })
+        bus.$emit('profileUser', this.settingsForm)
       })
     }
   },

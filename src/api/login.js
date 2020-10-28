@@ -25,3 +25,13 @@ export function updataImg (data) {
     data
   })
 }
+/**
+ * 修改用户信息
+ */
+export function updataUser (data) {
+  return request({
+    method: 'PATCH',
+    url: '/mp/v1_0/user/profile',
+    data
+  })
+}
