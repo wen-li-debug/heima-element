@@ -18,7 +18,12 @@
           <el-radio :label="-1">自动</el-radio>
         </el-radio-group>
         <template v-if="article.cover.type > 0">
-          <article-img v-for="item in article.cover.type" :key="item"/>
+          <article-img
+          v-for="(item,index) in article.cover.type"
+          :key="item"
+          @updataImg="onUpdataImg(index,$event)"
+          :coverImg="article.cover.images[index]"
+          />
         </template>
       </el-form-item>
       <el-form-item>
@@ -225,6 +230,12 @@ export default {
           this.article = article
         })
       })
+    },
+    // 接受cover.image 的url
+    onUpdataImg (index, url) {
+      console.log(index, url)
+      // 获取index和图片的url,给cover.image赋值
+      this.article.cover.images[index] = url
     }
   }
 }

@@ -27,7 +27,7 @@
       </el-tabs>
       <span slot="footer" class="dialog-footer">
         <el-button @click="imgDialogVisible = false">取 消</el-button>
-        <el-button type="primary" @click="onSubmitImg">确 定</el-button>
+        <el-button type="primary" @click="onSubmitImg" :loading="profileLoading">确 定</el-button>
       </span>
     </el-dialog>
   </div>
@@ -39,11 +39,12 @@ import { upLoadImg } from '@/api/upLoadImg'
 export default {
   name: 'articleImg',
   components: {},
-  props: {},
+  props: ['coverImg'],
   data () {
     return {
-      url: '',
+      url: this.coverImg,
       imgDialogVisible: false,
+      profileLoading: false,
       activeName: '',
       changeImg: ''
     }
@@ -68,6 +69,7 @@ export default {
     },
     // 确定上传文件
     onSubmitImg () {
+      this.profileLoading = true
       const files = this.$refs.profileView.files[0]
       // 判断是否是点击了上传图片
       if (this.activeName === 'Collection') {
@@ -86,7 +88,11 @@ export default {
             message: '上传成功'
           })
           this.url = res.data.url
+          this.profileLoading = false
           this.imgDialogVisible = false
+
+          // 将生成的url传给父组件
+          this.$emit('updataImg', res.data.url)
         })
       }
     }
