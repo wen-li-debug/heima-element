@@ -89,7 +89,7 @@ export default {
     // 是否显示收藏和删除图标
     isShowActive: {
       type: Boolean,
-      defautl: true
+      default: true
     },
     // 是否显示勾选图标
     isShowSelected: {
